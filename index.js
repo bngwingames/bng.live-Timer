@@ -50,15 +50,7 @@ app.get("/", (req, res) => {
     msg: "Server is running on port 2343",
   });
 });
-// async function hii(params) {
-//   const response =   await mailSender(
-//     "vermaanand278@gmail.com",
-//     `Dear, Anand`,
-//     otpTemplate(123)
-//   );
-//   console.log(response);
-// }
-// hii()
+
 httpServer.listen(PORT, () => {
   console.log("Server listening on port", PORT);
 });
