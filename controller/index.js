@@ -106,4 +106,3 @@ const sendOneMinResultToDatabase = async (time, obj) => {
       console.log(e);
     });
 };
-///////////
