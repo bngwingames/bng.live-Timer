@@ -34,50 +34,50 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
       let updatedTimestamp = parseInt(timetosend.getTime().toString());
       const actualtome = soment.tz("Asia/Kolkata");
       const time = actualtome.add(5, "hours").add(30, "minutes").valueOf();
-      setTimeout(async () => {
-        const res = await axios
-          .get(
-            `https://apilist.tronscanapi.com/api/block`,
-            {
-              params: {
-                sort: "-balance",
-                start: "0",
-                limit: "20",
-                producer: "",
-                number: "",
-                start_timestamp: updatedTimestamp,
-                end_timestamp: updatedTimestamp,
-              },
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then(async (result) => {
-            if (result?.data?.data[0]) {
-              const obj = result.data.data[0];
-              sendOneMinResultToDatabase(time, obj);
-            } else {
-              sendOneMinResultToDatabase(
-                time,
-                functionToreturnDummyResult(
-                  Math.floor(Math.random() * (4 - 0 + 1)) + 0
-                )
-              );
-            }
-          })
-          .catch((e) => {
-            console.log("error in tron api");
-            sendOneMinResultToDatabase(
-              time,
-              functionToreturnDummyResult(
-                Math.floor(Math.random() * (4 - 0 + 1)) + 0
-              )
-            );
-          });
-      }, [4000]);
+      // setTimeout(async () => {
+      //   const res = await axios
+      //     .get(
+      //       `https://apilist.tronscanapi.com/api/block`,
+      //       {
+      //         params: {
+      //           sort: "-balance",
+      //           start: "0",
+      //           limit: "20",
+      //           producer: "",
+      //           number: "",
+      //           start_timestamp: updatedTimestamp,
+      //           end_timestamp: updatedTimestamp,
+      //         },
+      //       },
+      //       {
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //       }
+      //     )
+      //     .then(async (result) => {
+      //       if (result?.data?.data[0]) {
+      //         const obj = result.data.data[0];
+      //         sendOneMinResultToDatabase(time, obj);
+      //       } else {
+      //         sendOneMinResultToDatabase(
+      //           time,
+      //           functionToreturnDummyResult(
+      //             Math.floor(Math.random() * (4 - 0 + 1)) + 0
+      //           )
+      //         );
+      //       }
+      //     })
+      //     .catch((e) => {
+      //       console.log("error in tron api");
+      //       sendOneMinResultToDatabase(
+      //         time,
+      //         functionToreturnDummyResult(
+      //           Math.floor(Math.random() * (4 - 0 + 1)) + 0
+      //         )
+      //       );
+      //     });
+      // }, [4000]);
     }
   });
 };
