@@ -9,6 +9,9 @@ const httpServer = http.createServer(app);
 const allroutes = require("./controller/index");
 const moment = require("moment");
 const allRoutes = require("./routes/Routes");
+const {
+  aviator_Start_function,
+} = require("./controller/aviator_Start_function");
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
@@ -42,9 +45,11 @@ if (x) {
   setTimeout(() => {
     allroutes.generatedTimeEveryAfterEveryOneMinTRX(io);
     allroutes.generatedTimeEveryAfterEveryOneMin(io);
+
     x = false;
   }, secondsUntilNextMinute * 1000);
 }
+aviator_Start_function(io);
 app.get("/", (req, res) => {
   res.status(200).json({
     msg: "Server is running on port 2343",

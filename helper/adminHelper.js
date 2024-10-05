@@ -2,8 +2,16 @@
 const { default: axios } = require("axios");
 var sql = require("../config/db.config");
 // const path = require("path");
+const CryptoJS = require("crypto-js");
 
 module.exports = {
+  deCryptData: (data) => {
+    const value =
+      (data &&
+        CryptoJS.AES.decrypt(data, "anand")?.toString(CryptoJS.enc.Utf8)) ||
+      null;
+    return value && JSON.parse(value);
+  },
   getAlredyPlacedBet: function (params) {
     let query_string =
       "SELECT number FROM trx_colour_bet_temp WHERE gamesno = ? AND userid = ? AND gameid = ? AND status = 0;";
