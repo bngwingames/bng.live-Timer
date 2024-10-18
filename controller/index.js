@@ -26,7 +26,6 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
         ? 60 - currentTime.getSeconds()
         : currentTime.getSeconds();
     io.emit("onemintrx", timeToSend);
-
     if (timeToSend === 6) {
       let timetosend = new Date();
       timetosend.setSeconds(54);
@@ -56,6 +55,7 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
             }
           )
           .then(async (result) => {
+            console.log(result?.data?.data[0]);
             if (result?.data?.data[0]) {
               const obj = result.data.data[0];
               sendOneMinResultToDatabase(time, obj);
@@ -102,7 +102,8 @@ const sendOneMinResultToDatabase = async (time, obj) => {
     `${obj.hash.slice(-5)}`,
     obj.number,
   ])
-    .then((result) => {})
+    .then((result) => {
+    })
     .catch((e) => {
       console.log(e);
     });
