@@ -26,62 +26,70 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
         ? 60 - currentTime.getSeconds()
         : currentTime.getSeconds();
     io.emit("onemintrx", timeToSend);
-    // console.log(timeToSend);
-    if (timeToSend === 6) {
-      let timetosend = currentTime;
-      // new Date();
-      timetosend.setSeconds(54);
-      timetosend.setMilliseconds(0);
-      let updatedTimestamp = parseInt(timetosend.getTime().toString());
-      const actualtome = soment.tz("Asia/Kolkata");
-      const time = actualtome.add(5, "hours").add(30, "minutes").valueOf();
-      setTimeout(async () => {
-        const res = await axios
-          .get(
-            `https://apilist.tronscanapi.com/api/block`,
-            {
-              params: {
-                sort: "-balance",
-                start: "0",
-                limit: "20",
-                producer: "",
-                number: "",
-                start_timestamp: updatedTimestamp,
-                end_timestamp: updatedTimestamp,
-              },
+  });
+};
+exports.jobRunByCrone = async () => {
+  schedule.schedule("54 * * * * *", async function () {
+    // let timetosend = new Date();
+    // timetosend.setSeconds(54);
+    // timetosend.setMilliseconds(0);
+
+    // let updatedTimestamp = parseInt(timetosend.getTime().toString());
+
+    const actualtome = soment.tz("Asia/Kolkata");
+    const time = actualtome;
+    // .add(5, "hours").add(30, "minutes").valueOf();
+    const getTime = await queryDb(
+      "SELECT `utc_time` FROM `trx_UTC_timer` ORDER BY `id` DESC LIMIT 1;",
+      []
+    );
+    let time_to_Tron = getTime?.[0]?.utc_time;
+    setTimeout(async () => {
+      const res = await axios
+        .get(
+          `https://apilist.tronscanapi.com/api/block`,
+          {
+            params: {
+              sort: "-balance",
+              start: "0",
+              limit: "20",
+              producer: "",
+              number: "",
+              start_timestamp: time_to_Tron,
+              end_timestamp: time_to_Tron,
             },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then(async (result) => {
-            if (result?.data?.data[0]) {
-              const obj = result.data.data[0];
-              sendOneMinResultToDatabase(time, obj, updatedTimestamp);
-            } else {
-              sendOneMinResultToDatabase(
-                time,
-                functionToreturnDummyResult(
-                  Math.floor(Math.random() * (4 - 0 + 1)) + 0
-                ),
-                updatedTimestamp
-              );
-            }
-          })
-          .catch((e) => {
-            console.log("error in tron api");
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(async (result) => {
+          if (result?.data?.data?.[0]) {
+            const obj = result.data.data[0];
+            sendOneMinResultToDatabase(time, obj, time_to_Tron);
+          } else {
             sendOneMinResultToDatabase(
               time,
               functionToreturnDummyResult(
                 Math.floor(Math.random() * (4 - 0 + 1)) + 0
               ),
-              updatedTimestamp
+              time_to_Tron
             );
-          });
-      }, [4000]);
-    }
+          }
+        })
+        .catch((e) => {
+          console.log("error in tron api");
+          sendOneMinResultToDatabase(
+            time,
+            functionToreturnDummyResult(
+              Math.floor(Math.random() * (4 - 0 + 1)) + 0
+            ),
+            time_to_Tron
+          );
+        });
+    }, [4000]);
   });
 };
 
