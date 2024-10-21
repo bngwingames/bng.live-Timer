@@ -26,8 +26,10 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
         ? 60 - currentTime.getSeconds()
         : currentTime.getSeconds();
     io.emit("onemintrx", timeToSend);
+    // console.log(timeToSend);
     if (timeToSend === 6) {
-      let timetosend = new Date();
+      let timetosend = currentTime;
+      // new Date();
       timetosend.setSeconds(54);
       timetosend.setMilliseconds(0);
       let updatedTimestamp = parseInt(timetosend.getTime().toString());
@@ -57,13 +59,14 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
           .then(async (result) => {
             if (result?.data?.data[0]) {
               const obj = result.data.data[0];
-              sendOneMinResultToDatabase(time, obj);
+              sendOneMinResultToDatabase(time, obj, updatedTimestamp);
             } else {
               sendOneMinResultToDatabase(
                 time,
                 functionToreturnDummyResult(
                   Math.floor(Math.random() * (4 - 0 + 1)) + 0
-                )
+                ),
+                updatedTimestamp
               );
             }
           })
@@ -73,16 +76,16 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
               time,
               functionToreturnDummyResult(
                 Math.floor(Math.random() * (4 - 0 + 1)) + 0
-              )
+              ),
+              updatedTimestamp
             );
           });
       }, [4000]);
-    
     }
   });
 };
 
-const sendOneMinResultToDatabase = async (time, obj) => {
+const sendOneMinResultToDatabase = async (time, obj, updatedTimestamp) => {
   const newString = obj.hash;
   let num = null;
   for (let i = newString.length - 1; i >= 0; i--) {
@@ -97,12 +100,11 @@ const sendOneMinResultToDatabase = async (time, obj) => {
     String(moment(time).format("HH:mm:ss")),
     1,
     `**${obj.hash.slice(-4)}`,
-    JSON.stringify(obj),
+    JSON.stringify({ ...obj, updatedTimestamp: updatedTimestamp }),
     `${obj.hash.slice(-5)}`,
     obj.number,
   ])
-    .then((result) => {
-    })
+    .then((result) => {})
     .catch((e) => {
       console.log(e);
     });
