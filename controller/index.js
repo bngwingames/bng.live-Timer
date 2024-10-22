@@ -30,20 +30,21 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
 };
 exports.jobRunByCrone = async () => {
   schedule.schedule("54 * * * * *", async function () {
-    // let timetosend = new Date();
-    // timetosend.setSeconds(54);
-    // timetosend.setMilliseconds(0);
+    let timetosend = new Date();
+    timetosend.setSeconds(54);
+    timetosend.setMilliseconds(0);
 
-    // let updatedTimestamp = parseInt(timetosend.getTime().toString());
+    let updatedTimestamp = parseInt(timetosend.getTime().toString());
 
     const actualtome = soment.tz("Asia/Kolkata");
     const time = actualtome;
     // .add(5, "hours").add(30, "minutes").valueOf();
-    const getTime = await queryDb(
-      "SELECT `utc_time` FROM `trx_UTC_timer` ORDER BY `id` DESC LIMIT 1;",
-      []
-    );
-    let time_to_Tron = getTime?.[0]?.utc_time;
+    // const getTime = await queryDb(
+    //   "SELECT `utc_time` FROM `trx_UTC_timer` ORDER BY `id` DESC LIMIT 1;",
+    //   []
+    // );
+    let time_to_Tron = updatedTimestamp;
+    // getTime?.[0]?.utc_time;
     setTimeout(() => {
       callTronAPISecond(time_to_Tron, time);
       recurstionCount = 0;
@@ -53,13 +54,16 @@ exports.jobRunByCrone = async () => {
 async function callTronAPISecond(time_to_Tron, time) {
   await axios
     .get(
-      `https://apilist.tronscan.org/api/block`,
+      `https://apilist.tronscanapi.com/api/block`,
       {
         params: {
-          sort: "-timestamp",
-          limit: 10,
-          start: time_to_Tron,
-          end: time_to_Tron,
+          sort: "-balance",
+          start: "0",
+          limit: "20",
+          producer: "",
+          number: "",
+          start_timestamp: time_to_Tron,
+          end_timestamp: time_to_Tron,
         },
       },
       {
@@ -69,17 +73,11 @@ async function callTronAPISecond(time_to_Tron, time) {
       }
     )
     .then(async (result) => {
-      if (
-        result?.data?.data?.[0] &&
-        result.data.data?.find((item) => item?.timestamp == time_to_Tron)
-      ) {
-        const obj = result.data.data?.find(
-          (item) => item?.timestamp == time_to_Tron
-        );
+      if (result?.data?.data?.[0]) {
         recurstionCount = 0;
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
-        console.log("recursion called")
+        console.log("recursion called");
         setTimeout(() => {
           callTronAPISecond(time_to_Tron, time);
         }, 1500);
