@@ -69,14 +69,17 @@ async function callTronAPISecond(time_to_Tron, time) {
       }
     )
     .then(async (result) => {
-      if (result?.data?.data?.[0]) {
+      if (
+        result?.data?.data?.[0] &&
+        result.data.data?.find((item) => item?.timestamp == time_to_Tron)
+      ) {
         const obj = result.data.data?.find(
           (item) => item?.timestamp == time_to_Tron
         );
         recurstionCount = 0;
-        console.log(obj);
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
+        console.log("recursion called")
         setTimeout(() => {
           callTronAPISecond(time_to_Tron, time);
         }, 1500);
