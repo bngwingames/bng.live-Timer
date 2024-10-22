@@ -47,7 +47,7 @@ exports.jobRunByCrone = async () => {
     setTimeout(() => {
       callTronAPISecond(time_to_Tron, time);
       recurstionCount = 0;
-    }, 4000);
+    }, 5000);
   });
 };
 async function callTronAPISecond(time_to_Tron, time) {
@@ -74,6 +74,7 @@ async function callTronAPISecond(time_to_Tron, time) {
           (item) => item?.timestamp == time_to_Tron
         );
         recurstionCount = 0;
+        console.log(obj);
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
         setTimeout(() => {
