@@ -45,19 +45,19 @@ exports.jobRunByCrone = async () => {
     );
     let time_to_Tron = getTime?.[0]?.utc_time;
     setTimeout(() => {
-      callTronAPI(time_to_Tron, time);
+      callTronAPISecond(time_to_Tron, time);
       recurstionCount = 0;
     }, 4000);
   });
 };
-async function callTronAPI(time_to_Tron, time) {
+async function callTronAPISecond(time_to_Tron, time) {
   await axios
     .get(
       `https://apilist.tronscan.org/api/block`,
       {
         params: {
           sort: "-timestamp",
-          limit: 1,
+          limit: 10,
           start: time_to_Tron,
           end: time_to_Tron,
         },
@@ -70,41 +70,33 @@ async function callTronAPI(time_to_Tron, time) {
     )
     .then(async (result) => {
       if (result?.data?.data?.[0]) {
-        console.log("inside the if");
-        const obj = result.data.data[0];
+        const obj = result.data.data?.find(
+          (item) => item?.timestamp == time_to_Tron
+        );
         recurstionCount = 0;
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
-        console.log("inside the else", time_to_Tron);
         setTimeout(() => {
-          recurstionCount = recurstionCount + 1;
-          callTronAPI(time_to_Tron, time);
+          callTronAPISecond(time_to_Tron, time);
         }, 1500);
-        // if (recurstionCount <= 4) {
-        //   setTimeout(() => {
-        //     recurstionCount = recurstionCount + 1;
-        //     callTronAPI(time_to_Tron, time);
-        //   }, 1000);
-        // } else {
-        //   sendOneMinResultToDatabase(
-        //     time,
-        //     functionToreturnDummyResult(
-        //       Math.floor(Math.random() * (4 - 0 + 1)) + 0
-        //     ),
-        //     time_to_Tron
-        //   );
-        // }
       }
     })
     .catch((e) => {
       console.log("error in tron api");
-      sendOneMinResultToDatabase(
-        time,
-        functionToreturnDummyResult(
-          Math.floor(Math.random() * (4 - 0 + 1)) + 0
-        ),
-        time_to_Tron
-      );
+      if (recurstionCount <= 4) {
+        setTimeout(() => {
+          recurstionCount = recurstionCount + 1;
+          callTronAPISecond(time_to_Tron, time);
+        }, 1000);
+      } else {
+        sendOneMinResultToDatabase(
+          time,
+          functionToreturnDummyResult(
+            Math.floor(Math.random() * (4 - 0 + 1)) + 0
+          ),
+          time_to_Tron
+        );
+      }
     });
 }
 const sendOneMinResultToDatabase = async (time, obj, updatedTimestamp) => {
