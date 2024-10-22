@@ -77,20 +77,24 @@ async function callTronAPI(time_to_Tron, time) {
         recurstionCount = 0;
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
-        if (recurstionCount <= 4) {
-          setTimeout(() => {
-            recurstionCount = recurstionCount + 1;
-            callTronAPI(time_to_Tron, time);
-          }, 1000);
-        } else {
-          sendOneMinResultToDatabase(
-            time,
-            functionToreturnDummyResult(
-              Math.floor(Math.random() * (4 - 0 + 1)) + 0
-            ),
-            time_to_Tron
-          );
-        }
+        setTimeout(() => {
+          recurstionCount = recurstionCount + 1;
+          callTronAPI(time_to_Tron, time);
+        }, 1500);
+        // if (recurstionCount <= 4) {
+        //   setTimeout(() => {
+        //     recurstionCount = recurstionCount + 1;
+        //     callTronAPI(time_to_Tron, time);
+        //   }, 1000);
+        // } else {
+        //   sendOneMinResultToDatabase(
+        //     time,
+        //     functionToreturnDummyResult(
+        //       Math.floor(Math.random() * (4 - 0 + 1)) + 0
+        //     ),
+        //     time_to_Tron
+        //   );
+        // }
       }
     })
     .catch((e) => {
