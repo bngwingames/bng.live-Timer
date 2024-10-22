@@ -89,7 +89,7 @@ exports.jobRunByCrone = async () => {
             time_to_Tron
           );
         });
-    }, [4000]);
+    }, [5000]);
   });
 };
 

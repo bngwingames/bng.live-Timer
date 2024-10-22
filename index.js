@@ -43,7 +43,7 @@ if (x) {
     secondsUntilNextMinute
   );
   setTimeout(() => {
-    allroutes.jobRunByCrone()
+    allroutes.jobRunByCrone();
     allroutes.generatedTimeEveryAfterEveryOneMinTRX(io);
     allroutes.generatedTimeEveryAfterEveryOneMin(io);
 
