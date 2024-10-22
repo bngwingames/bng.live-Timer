@@ -77,10 +77,10 @@ async function callTronAPISecond(time_to_Tron, time) {
     .then(async (result) => {
       if (
         result?.data?.data?.[0] &&
-        data?.data?.find((block) => block.timestamp === Number(time_to_Tron))
+        result?.data?.data?.find((block) => block.timestamp === Number(time_to_Tron))
       ) {
         recurstionCount = 0;
-        const obj = data?.data?.find(
+        const obj = result?.data?.data?.find(
           (block) => block.timestamp === Number(time_to_Tron)
         );
         // result?.data?.data?.[0];
