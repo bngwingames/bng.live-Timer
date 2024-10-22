@@ -39,12 +39,11 @@ exports.jobRunByCrone = async () => {
     const actualtome = soment.tz("Asia/Kolkata");
     const time = actualtome;
     // .add(5, "hours").add(30, "minutes").valueOf();
-    // const getTime = await queryDb(
-    //   "SELECT `utc_time` FROM `trx_UTC_timer` ORDER BY `id` DESC LIMIT 1;",
-    //   []
-    // );
-    let time_to_Tron = updatedTimestamp;
-    // getTime?.[0]?.utc_time;
+    const getTime = await queryDb(
+      "SELECT `utc_time` FROM `trx_UTC_timer` ORDER BY `id` DESC LIMIT 1;",
+      []
+    );
+    let time_to_Tron = getTime?.[0]?.utc_time;
     setTimeout(() => {
       callTronAPISecond(time_to_Tron, time);
       recurstionCount = 0;
@@ -53,29 +52,38 @@ exports.jobRunByCrone = async () => {
 };
 async function callTronAPISecond(time_to_Tron, time) {
   await axios
+    // .get(
+    //   `https://apilist.tronscanapi.com/api/block`,
+    //   {
+    //     params: {
+    //       sort: "-balance",
+    //       start: "0",
+    //       limit: "20",
+    //       producer: "",
+    //       number: "",
+    //       start_timestamp: time_to_Tron,
+    //       end_timestamp: time_to_Tron,
+    //     },
+    //   },
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // )
     .get(
-      `https://apilist.tronscanapi.com/api/block`,
-      {
-        params: {
-          sort: "-balance",
-          start: "0",
-          limit: "20",
-          producer: "",
-          number: "",
-          start_timestamp: time_to_Tron,
-          end_timestamp: time_to_Tron,
-        },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      "https://apilist.tronscanapi.com/api/block?sort=-balance&start=0&limit=20&producer=&number=&start_timestamp=&end_timestamp="
     )
     .then(async (result) => {
-      if (result?.data?.data?.[0]) {
+      if (
+        result?.data?.data?.[0] &&
+        data.data.filter((block) => block.timestamp === Number(time_to_Tron))
+      ) {
         recurstionCount = 0;
-        const obj = result?.data?.data?.[0];
+        const obj = data.data.filter(
+          (block) => block.timestamp === Number(time_to_Tron)
+        );
+        // result?.data?.data?.[0];
         sendOneMinResultToDatabase(time, obj, time_to_Tron);
       } else {
         console.log("recursion called");
