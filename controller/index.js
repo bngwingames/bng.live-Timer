@@ -9,12 +9,18 @@ const { default: axios } = require("axios");
 let recurstionCount = 0;
 exports.generatedTimeEveryAfterEveryOneMin = (io) => {
   const job = schedule.schedule("* * * * * *", function () {
-    const currentTime = new Date();
-    const timeToSend =
-      currentTime.getSeconds() > 0
-        ? 60 - currentTime.getSeconds()
-        : currentTime.getSeconds();
-    io.emit("onemin", timeToSend);
+    // const currentTime = new Date();
+    // const timeToSend =
+    //   currentTime.getSeconds() > 0
+    //     ? 60 - currentTime.getSeconds()
+    //     : currentTime.getSeconds();
+    const now = new Date();
+    const nowIST = soment(now).tz("Asia/Kolkata");
+
+    const currentMinute = nowIST.minutes();
+    const currentSecond = nowIST.seconds();
+    io.emit("onemin", `${currentMinute}_${currentSecond}`);
+    // io.emit("onemin", timeToSend);
   });
 };
 
