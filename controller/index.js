@@ -53,7 +53,7 @@ exports.jobRunByCrone = async () => {
     setTimeout(() => {
       callTronAPISecond(time_to_Tron, time);
       recurstionCount = 0;
-    }, 5000);
+    }, 4000);
   });
 };
 async function callTronAPISecond(time_to_Tron, time) {
