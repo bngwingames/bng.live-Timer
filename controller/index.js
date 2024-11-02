@@ -162,3 +162,4 @@ const sendOneMinResultToDatabase = async (time, obj, updatedTimestamp) => {
 //     },
 //   }
 // )
+//////////
