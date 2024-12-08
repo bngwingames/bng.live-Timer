@@ -22,14 +22,14 @@ exports.aviator_Start_functionAWS = async (io) => {
     let find_any_loss_amount_match_with_60_percent = [];
     const time = Math.floor(100 + Math.random() * (1200 - 100));
     // console.log(time, "this is time to send to the uer or client");
-    io.emit("message", time);
-    io.emit("crash", false);
+    io.emit("messageaws", time);
+    io.emit("crashaws", false);
     let fly_time = 0;
     let milliseconds = 0;
     let seconds = 1;
 
-    io.emit("setloder", false);
-    io.emit("isFlying", true);
+    io.emit("setloderaws", false);
+    io.emit("isFlyingaws", true);
 
     /////////////////////////////////////////////////////////////////////// start main calculaton for cashs out ///////////////////////////
 
@@ -41,7 +41,10 @@ exports.aviator_Start_functionAWS = async (io) => {
         milliseconds = 0;
       }
 
-      io.emit("seconds", `${String(milliseconds).padStart(2, "0")}_${seconds}`);
+      io.emit(
+        "secondsaws",
+        `${String(milliseconds).padStart(2, "0")}_${seconds}`
+      );
       time_to_be_crashed = Number(`${seconds}.${milliseconds}`);
 
       const newTime = fly_time + 1;
@@ -254,12 +257,12 @@ exports.aviator_Start_functionAWS = async (io) => {
       clearInterval(crashInterval);
       // console.log("thisFunctonMustBePerFormAfterCrash HOOOOOOO crached");
       // const round = await GameRound?.find({});
-      io.emit("crash", true);
+      io.emit("crashaws", true);
 
-      io.emit("isFlying", false);
-      io.emit("setcolorofdigit", true);
-      io.emit("apply_bet_counter", []);
-      io.emit("cash_out_counter", []);
+      io.emit("isFlyingaws", false);
+      io.emit("setcolorofdigitaws", true);
+      io.emit("apply_bet_counteraws", []);
+      io.emit("cash_out_counteraws", []);
       /////////////////////////// fake process //////////////////////
 
       if (msg === "counter_jyada_ho_chuka_hai") {
@@ -306,8 +309,8 @@ exports.aviator_Start_functionAWS = async (io) => {
       ]);
 
       setTimeout(() => {
-        io.emit("setcolorofdigit", false);
-        io.emit("setloder", true);
+        io.emit("setcolorofdigitaws", false);
+        io.emit("setloderaws", true);
       }, 3000);
       const query_for_get_total_loss_amount = `SELECT SUM(lossAmount) as sum_total FROM aviator_loss;`;
       let loss_amount = await queryDb(query_for_get_total_loss_amount, []);
@@ -369,7 +372,7 @@ exports.betPlacedAviator = async (req, res) => {
     await queryDb("SELECT @result_msg,@email_to_be_sent_out;", [])
       ?.then((result) => {
         input_output &&
-          input_output.emit("user_bet", {
+          input_output.emit("user_betaws", {
             id: u_id,
             email: result?.[0]?.["@email_to_be_sent_out"] || "***",
             amount: spnt_amount,
@@ -424,7 +427,7 @@ exports.cashOutFunction = async (req, res) => {
     await queryDb("SELECT @result_msg,@amount_cras;", [])
       .then((result) => {
         input_output &&
-          input_output.emit("user_bet_cashout", {
+          input_output.emit("user_bet_cashoutaws", {
             id: u_id,
             multiplier: time,
             amountcashed: result?.[0]?.["@amount_cras"],

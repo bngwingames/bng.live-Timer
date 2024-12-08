@@ -49,7 +49,7 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/api/v1", allRoutes);
-app.use("/api/v1", allRoutesaws);
+app.use("/api/v1/aws", allRoutesaws);
 io.on("connection", (socket) => {});
 
 let x = true;
@@ -93,7 +93,7 @@ setInterval(() => {
   sendDisawarAmountToTheAdmin(io);
 }, 5 * 60 * 1000);
 aviator_Start_functionAWS(io);
-rouletteResultAWS(io);
+// rouletteResultAWS(io);
 
 let y = true;
 if (y) {
@@ -107,7 +107,7 @@ if (y) {
   );
   setTimeout(() => {
     jobRunByCroneAWS();
-    generatedTimeEveryAfterEveryOneMinAWS(io);
+    // generatedTimeEveryAfterEveryOneMinAWS(io);
     x = false;
   }, secondsUntilNextMinute * 1000);
 }
