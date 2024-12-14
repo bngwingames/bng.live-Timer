@@ -1215,6 +1215,33 @@ exports.set_ZPFunction = async (req, res) => {
     });
   }
 };
+exports.set_ZPPFunction = async (req, res) => {
+  try {
+    const u_req_user_id = req.userid;
+    if (!u_req_user_id)
+      return res.status(201)?.json({
+        msg: "Token not found.",
+      });
+
+    const { zpp_amount } = req.body;
+    if (!zpp_amount) {
+      return res.status(200).json({
+        msg: "Everything is required",
+      });
+    }
+    let q = "UPDATE `admin_setting` SET `longtext` = ? WHERE `id` = 33;";
+    await queryDb(q, [Number(zpp_amount)]);
+
+    return res.status(200).json({
+      msg: "Updated successfully.",
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      msg: "Something went wrong in the node API",
+    });
+  }
+};
 exports.set_GameStatus = async (req, res) => {
   try {
     const u_req_user_id = req.userid;

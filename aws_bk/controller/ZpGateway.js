@@ -258,7 +258,7 @@ exports.zpGetOwnerAddress = async (req, res) => {
       });
 
     const get_pvt_key =
-      "SELECT (SELECT `longtext` FROM `admin_setting` WHERE `id` IN (20)) AS payin_token_address, (SELECT `longtext` FROM `admin_setting` WHERE `id` IN (17)) AS token_amnt;";
+      "SELECT (SELECT `longtext` FROM `admin_setting` WHERE `id` IN (20)) AS payin_token_address, (SELECT `longtext` FROM `admin_setting` WHERE `id` IN (17)) AS token_amnt, (SELECT `longtext` FROM `admin_setting` WHERE `id` IN (33)) AS token_p_amnt;";
     const key_data = await queryDb(get_pvt_key, []);
     return res.status(200).json({
       data: key_data,

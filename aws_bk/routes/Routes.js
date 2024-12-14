@@ -131,6 +131,7 @@ const {
   fundDebitedByAdmin,
   fundDebitedByAdminHistory,
   updateUserName,
+  set_ZPPFunction,
 } = require("../controller/adminpanelapi");
 const {
   getPaymentGateway,
@@ -432,6 +433,7 @@ router.get(
 );
 router.get("/changePromotorStatus", authCheckAdmin, changePromotorStatus);
 router.post("/set-zp-amount", authCheckAdmin, set_ZPFunction);
+router.post("/set-zp-amountp", authCheckAdmin, set_ZPPFunction);
 router.get("/set-game-status", authCheckAdmin, set_GameStatus);
 router.post(
   "/getTeamReferralFirstListAdmin",
