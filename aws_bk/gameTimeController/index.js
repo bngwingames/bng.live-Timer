@@ -148,8 +148,7 @@ async function getBlockDetails(time, blockId, time_to_Tron) {
 
 const sendOneMinResultToDatabase = async (time, obj, updatedTimestamp) => {
   const newString = obj.hash;
-  let num = null;
-
+  let num = null;  
   for (let i = newString.length - 1; i >= 0; i--) {
     if (!isNaN(parseInt(newString[i]))) {
       num = parseInt(newString[i]);

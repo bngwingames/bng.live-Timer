@@ -74,9 +74,9 @@ if (x) {
 aviator_Start_function(io);
 
 //////////////////////////////////////////////   aws /////////////
-setInterval(() => {
-  sendRouletteAmountToTheAdmin(io);
-}, 5000);
+// setInterval(() => {
+//   sendRouletteAmountToTheAdmin(io);
+// }, 5000);
 setInterval(() => {
   sendWingoAmountToTheAdmin(io);
 }, 5000);
@@ -86,12 +86,12 @@ setInterval(() => {
 setInterval(() => {
   sendWingoAmountToTheAdminFiveMin(io);
 }, 15000);
-setInterval(() => {
-  sendGaziyabadAmountToTheAdmin(io);
-  sendFaridabadAmountToTheAdmin(io);
-  sendGaliAmountToTheAdmin(io);
-  sendDisawarAmountToTheAdmin(io);
-}, 5 * 60 * 1000);
+// setInterval(() => {
+//   sendGaziyabadAmountToTheAdmin(io);
+//   sendFaridabadAmountToTheAdmin(io);
+//   sendGaliAmountToTheAdmin(io);
+//   sendDisawarAmountToTheAdmin(io);
+// }, 5 * 60 * 1000);
 aviator_Start_functionAWS(io);
 // rouletteResultAWS(io);
 
@@ -106,7 +106,8 @@ if (y) {
     secondsUntilNextMinute
   );
   setTimeout(() => {
-    jobRunByCroneAWS();
+    // jobRunByCroneAWS();
+
     // generatedTimeEveryAfterEveryOneMinAWS(io);
     x = false;
   }, secondsUntilNextMinute * 1000);
