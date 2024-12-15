@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use("/api/v1", allRoutes);
 app.use("/api/v1/aws", allRoutesaws);
 io.on("connection", (socket) => {});
-
+//
 let x = true;
 if (x) {
   console.log("Waiting for the next minute to start...");

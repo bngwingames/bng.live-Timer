@@ -556,7 +556,7 @@ exports.signupUser = async (req, res) => {
     });
   try {
     let str = randomStrNumeric(7);
-    let randomId = "ZG" + str;
+    let randomId = "7AXIS" + str;
     const replacement = [
       String(randomId),
       mobile,
