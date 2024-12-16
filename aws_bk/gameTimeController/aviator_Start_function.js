@@ -62,7 +62,7 @@ exports.aviator_Start_functionAWS = async (io) => {
         return;
       }
       if (seconds === 1) {
-        const percent_60_bet_amount = total_bet_place_temp * (100 / 60);
+        const percent_60_bet_amount = total_bet_place_temp * (100 / 70);
         find_any_loss_amount_match_with_60_percent = [
           lossess_amount?.find(
             (i) => Number(i?.lossAmount) <= percent_60_bet_amount
@@ -77,7 +77,7 @@ exports.aviator_Start_functionAWS = async (io) => {
     ///////////////////////////////////// thsi is the calculation of total cashout sum
 
     crashInterval = setInterval(async () => {
-      const total_amount_ka_60_percent = total_bet_place_temp * (60 / 100); /// 60 percent se upar jayega to crash kra dena hai
+      const total_amount_ka_60_percent = total_bet_place_temp * (70 / 100); /// 60 percent se upar jayega to crash kra dena hai
 
       /////////////////// condition for loss amount //////////////////////////
 
@@ -170,7 +170,7 @@ exports.aviator_Start_functionAWS = async (io) => {
       }
 
       /////////////////////////////////// thsi is the calculation of total cashout sum
-      if (total_candidate <= 2 && total_bet_place_temp >= 300) {
+      if (total_candidate <= 2 && total_bet_place_temp >= 500) {
         clearInterval(timerInterval);
         clearInterval(crashInterval);
         clearInterval(timerInterval);
@@ -184,7 +184,7 @@ exports.aviator_Start_functionAWS = async (io) => {
       }
 
       /////////// conditoin for that if total amount is grater or equal that 500 Rs. creash ////////////////////
-      if (total_candidate <= 5 && total_bet_place_temp >= 500) {
+      if (total_candidate <= 5 && total_bet_place_temp >= 1000) {
         clearInterval(timerInterval);
         clearInterval(crashInterval);
         clearInterval(timerInterval);
