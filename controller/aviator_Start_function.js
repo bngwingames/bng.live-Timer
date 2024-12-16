@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { deCryptData, queryDb } = require("../helper/adminHelper");
+const { deCryptData, queryDb2 } = require("../helper/adminHelper");
 let input_output = null;
 let bet_data = [];
 let already_call_functon = true;
@@ -159,7 +159,7 @@ exports.aviator_Start_function = async (io) => {
                 //   "UPDATE aviator_loss_counter SET counter = counter + 1 WHERE id = 1;";
                 const query_for_incr_counter =
                   "UPDATE aviator_loss_counter SET counter = 3 WHERE id = 1;";
-                await queryDb(query_for_incr_counter, []);
+                await queryDb2(query_for_incr_counter, []);
               }
             }
           }
@@ -264,7 +264,9 @@ exports.aviator_Start_function = async (io) => {
 
       if (msg === "counter_jyada_ho_chuka_hai") {
         const query_for_remove_from_loss_table = `CALL sp_to_remove_loss_amount_aviator_table(?);`;
-        await queryDb(query_for_remove_from_loss_table, [total_bet_place_temp]);
+        await queryDb2(query_for_remove_from_loss_table, [
+          total_bet_place_temp,
+        ]);
       }
       if (
         msg ===
@@ -272,13 +274,13 @@ exports.aviator_Start_function = async (io) => {
       ) {
         const percent_60_bet_amount = total_bet_place_temp * (100 / 60);
         const query_for_find_record_less_than_equal_to_60_percent = `SELECT * FROM aviator_loss WHERE lossAmount <= ${percent_60_bet_amount} ORDER BY lossAmount DESC LIMIT 1;`;
-        const find_any_loss_amount_match_with_60_percent = await queryDb(
+        const find_any_loss_amount_match_with_60_percent = await queryDb2(
           query_for_find_record_less_than_equal_to_60_percent,
           []
         );
 
         const query_update_record_if_found = `UPDATE aviator_loss SET lossAmount = lossAmount - ${total_bet_place_temp} WHERE id = ?`;
-        await queryDb(query_update_record_if_found, [
+        await queryDb2(query_update_record_if_found, [
           find_any_loss_amount_match_with_60_percent?.[0]?.id,
         ]);
       }
@@ -286,7 +288,7 @@ exports.aviator_Start_function = async (io) => {
       if (msg === "recursive_functoin_for_all_removel_amount") {
         const query_for_remove_60_percent_loss_wala_data =
           "CALL sp_for_release_60_percent_amount_from_loss_table(?,?);";
-        await queryDb(query_for_remove_60_percent_loss_wala_data, [
+        await queryDb2(query_for_remove_60_percent_loss_wala_data, [
           total_bet_place_temp,
           60,
         ]);
@@ -294,13 +296,13 @@ exports.aviator_Start_function = async (io) => {
 
       if (msg === "remove_all_loss_and_set_counter_to_zero") {
         const query_for_truncate_loss_table = `TRUNCATE TABLE aviator_loss;`;
-        await queryDb(query_for_truncate_loss_table, []);
+        await queryDb2(query_for_truncate_loss_table, []);
         const query_for_update_counter = `UPDATE aviator_loss_counter SET counter = 0 WHERE id = 1;`;
-        await queryDb(query_for_update_counter, []);
+        await queryDb2(query_for_update_counter, []);
       }
 
       const query_for_insert_game_history = `INSERT INTO aviator_game_history(round,multiplier) VALUES(?,?);`;
-      await queryDb(query_for_insert_game_history, [
+      await queryDb2(query_for_insert_game_history, [
         10000,
         msg === "pre" ? time : time - 0.01,
       ]);
@@ -310,17 +312,17 @@ exports.aviator_Start_function = async (io) => {
         io.emit("setloder", true);
       }, 3000);
       const query_for_get_total_loss_amount = `SELECT SUM(lossAmount) as sum_total FROM aviator_loss;`;
-      let loss_amount = await queryDb(query_for_get_total_loss_amount, []);
+      let loss_amount = await queryDb2(query_for_get_total_loss_amount, []);
 
       //const set_counter = await SetCounter.find({});
       const query_for_get_counter = `SELECT counter FROM aviator_loss_counter WHERE id = 1;`;
-      const set_counter = await queryDb(query_for_get_counter, []);
+      const set_counter = await queryDb2(query_for_get_counter, []);
       let get_counter = set_counter?.[0]?.counter || 0;
 
       setTimeout(async () => {
         const query_for_update_wallet_and_loss_table =
           "CALL sp_clear_remaining_bet_aviator();";
-        await queryDb(query_for_update_wallet_and_loss_table, []);
+        await queryDb2(query_for_update_wallet_and_loss_table, []);
       }, 10000);
 
       setTimeout(async () => {
@@ -332,7 +334,7 @@ exports.aviator_Start_function = async (io) => {
         total_candidate = 0;
         const query_for_get_all_loss_amount =
           "SELECT id,lossAmount FROM aviator_loss ORDER BY lossAmount DESC;";
-        const all_lossess = await queryDb(query_for_get_all_loss_amount, [])
+        const all_lossess = await queryDb2(query_for_get_all_loss_amount, [])
           .then((result) => {
             return result;
           })
@@ -365,7 +367,7 @@ exports.betPlacedAviator = async (req, res) => {
       String(spnt_amount),
       button_type,
     ];
-    await queryDb(query_for_bet_place, params)
+    await queryDb2(query_for_bet_place, params)
       ?.then((result) => {
         input_output &&
           input_output.emit("user_bet", {
@@ -419,7 +421,7 @@ exports.cashOutFunction = async (req, res) => {
       Number(time),
       button_type,
     ];
-    await queryDb(query_for_cash_out, params)
+    await queryDb2(query_for_cash_out, params)
       .then((result) => {
         input_output &&
           input_output.emit("user_bet_cashout", {
@@ -450,7 +452,7 @@ exports.cashOutFunction = async (req, res) => {
 exports.getGameHistoryAviator = async (req, res) => {
   try {
     const query_for_game_history = `SELECT * FROM aviator_game_history;`;
-    const data = await queryDb(query_for_game_history)
+    const data = await queryDb2(query_for_game_history)
       .then((result) => {
         return result;
       })
@@ -475,7 +477,7 @@ exports.getLederData = async (req, res) => {
     const query_for_get_ledger =
       "SELECT fn_get_total_aviator_trading() AS local_length,  a.`amount`,a.`amountcashed`,a.`multiplier`,a.`createdAt`,a.`updatedAt`,u.`email` AS email,u.`full_name` AS full_name,u.`mobile` AS mobile FROM `aviator_bet_place_ledger` AS a LEFT JOIN `user` AS u ON a.`userid` = u.`id` ORDER BY(a.`amountcashed`) DESC LIMIT 100;";
     // const data = await ApplyBetLedger.find({}).populate("main_id").limit(100);
-    const data = await queryDb(query_for_get_ledger)
+    const data = await queryDb2(query_for_get_ledger)
       .then((result) => {
         return result;
       })
@@ -504,7 +506,7 @@ exports.getWalletByUserId = async (req, res) => {
     // const data = await User.findById({ _id: id });
     const query_for_get_balance =
       "SELECT `wallet` AS wallet,`winning_wallet` AS winning FROM `user` WHERE `id` = ?;";
-    const data = await queryDb(query_for_get_balance, [Number(id)]);
+    const data = await queryDb2(query_for_get_balance, [Number(id)]);
 
     if (!data)
       return res.status(400).json({
@@ -533,7 +535,7 @@ exports.getMyHistoryByID = async (req, res) => {
     // const data = await ApplyBetLedger.find({ userid: String(user_id_node) });
     const query_for_get_my_history =
       "SELECT * FROM `aviator_bet_place_ledger` WHERE userid = ? ORDER BY(id) DESC LIMIT 100;";
-    const data = await queryDb(query_for_get_my_history, [
+    const data = await queryDb2(query_for_get_my_history, [
       Number(user_id_node),
     ]);
 
@@ -555,7 +557,7 @@ exports.getTopRecordsAviator = async (req, res) => {
     const query_for_find_top_winner =
       "SELECT a.`amount`,a.`amountcashed`,a.`multiplier`,a.`createdAt`,a.`updatedAt`,u.`email`,u.`full_name`,u.`created_at` FROM `aviator_bet_place_ledger` AS a LEFT JOIN `user` AS u ON a.`userid` = u.id ORDER BY a.`amountcashed` DESC LIMIT 10;";
 
-    const data = await queryDb(query_for_find_top_winner, []);
+    const data = await queryDb2(query_for_find_top_winner, []);
     return res.status(200).json({
       msg: "Data save successfully",
       data: data,

@@ -3,6 +3,7 @@ const { default: axios } = require("axios");
 var sql = require("../config/db.config");
 // const path = require("path");
 const CryptoJS = require("crypto-js");
+const sequelize = require("../config/seq.config");
 
 module.exports = {
   deCryptData: (data) => {
@@ -245,7 +246,7 @@ module.exports = {
     return ans;
   },
 
-  queryDb: function (query, param) {
+  queryDb2: function (query, param) {
     return new Promise((resolve, reject) => {
       sql.query(query, param, (err, result) => {
         if (err) {
@@ -254,6 +255,20 @@ module.exports = {
         }
         resolve(result);
       });
+    });
+  },
+  queryDb: function (query, param) {
+    return new Promise((resolve, reject) => {
+      sequelize
+        .query(query, {
+          replacements: param,
+        })
+        .then((res) => {
+          return resolve(res?.[0]);
+        })
+        .catch((e) => {
+          return console.log(e);
+        });
     });
   },
 };
