@@ -30,7 +30,7 @@ const {
   rouletteResultAWS,
   jobRunByCroneAWS,
   generatedTimeEveryAfterEveryOneMinAWS,
-  jobRunByCroneAWSForWingoGame,
+  // jobRunByCroneAWSForWingoGame,
 } = require("./aws_bk/gameTimeController");
 const io = new Server(httpServer, {
   cors: {
