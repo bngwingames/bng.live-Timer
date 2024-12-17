@@ -148,7 +148,7 @@ async function getBlockDetails(time, blockId, time_to_Tron) {
 
 const sendOneMinResultToDatabase = async (time, obj, updatedTimestamp) => {
   const newString = obj.hash;
-  let num = null;  
+  let num = null;
   for (let i = newString.length - 1; i >= 0; i--) {
     if (!isNaN(parseInt(newString[i]))) {
       num = parseInt(newString[i]);
@@ -222,4 +222,38 @@ exports.rouletteResultAWS = (io) => {
       console.log(e);
     }
   }
+};
+
+exports.jobRunByCroneAWSForWingoGame = async () => {
+  console.log("functoin called");
+  schedule.schedule("58 * * * * *", async function () {
+    const period_id = await queryDb(
+      "SELECT win_transactoin FROM wingo_round_number WHERE win_id = 1;",
+      []
+    );
+    const period = period_id?.[0]?.win_transactoin;
+    const reqBody = {
+      language: 0,
+      pageNo: 1,
+      pageSize: 10,
+      random: "764ad36b88a54a3b8d040838a9438dfb",
+      signature: "E8438324D9EC6D487894F3F933B37EB0",
+      timestamp: 1734372964,
+      typeId: 1,
+    };
+    await axios
+      .post(
+        `https://api.bigdaddygame.cc/api/webapi/GetNoaverageEmerdList`,
+        reqBody
+      )
+      .then(async (result) => {
+        let q =
+          "INSERT INTO `colour_admin_result`(`gamesno`,`gameid`,`number`,`status`) VALUES(?,?,?,?);";
+        let obj = result?.data?.data?.list?.[0];
+        await queryDb(q, [Number(period) + 1, 1, obj?.number, 1]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  });
 };
