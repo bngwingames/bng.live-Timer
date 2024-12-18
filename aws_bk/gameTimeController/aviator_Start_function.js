@@ -9,9 +9,8 @@ let total_candidate = 0;
 let time_to_be_crashed = 0;
 let istrueRandom = true;
 let randomAray = [
-  0, 100, 200, 123, 100, 0, 500, 900, 500, 400, 200, 0, 0, 10, 220, 30, 40, 300,
-  400, 0, 500, 0, 1200, 900, 1100, 0, 0, 0, 800, 300, 900, 0, 700, 0, 600, 0,
-  400,
+  0, 10, 20, 12, 10, 0, 5, 90, 50, 40, 20, 0, 0, 13, 5, 20, 30, 3, 50, 0, 500,
+  0, 10, 90, 10, 0, 0, 0, 80, 3, 90, 0, 70, 0, 6, 0, 40,
 ];
 exports.aviator_Start_functionAWS = async (io) => {
   input_output = io;
@@ -52,7 +51,6 @@ exports.aviator_Start_functionAWS = async (io) => {
         `${String(milliseconds).padStart(2, "0")}_${seconds}`
       );
       time_to_be_crashed = Number(`${seconds}.${milliseconds}`);
-
       const newTime = fly_time + 1;
       if (newTime >= time) {
         clearInterval(timerInterval);
@@ -91,8 +89,7 @@ exports.aviator_Start_functionAWS = async (io) => {
             "pre"
           );
         already_call_functon = false;
-        return;
-      }, randomAray[crashTime] || 300);
+      }, randomAray[crashTime] * 1000);
     } else {
       crashInterval = setInterval(async () => {
         const total_amount_ka_60_percent = total_bet_place_temp * (70 / 100); /// 60 percent se upar jayega to crash kra dena hai
