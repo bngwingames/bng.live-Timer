@@ -83,12 +83,17 @@ exports.aviator_Start_functionAWS = async (io) => {
     if (istrueRandom) {
       const crashTime = Math.floor(Math.random() * randomAray.length);
       setTimeout(() => {
+        clearInterval(timerInterval);
+        clearInterval(crashInterval);
+        clearInterval(timerInterval);
+        clearInterval(crashInterval);
         already_call_functon &&
           thisFunctonMustBePerFormAfterCrash(
             Number(`${seconds}.${milliseconds}`),
             "pre"
           );
         already_call_functon = false;
+        return
       }, randomAray[crashTime] * 1000);
     } else {
       crashInterval = setInterval(async () => {
