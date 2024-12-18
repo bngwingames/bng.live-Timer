@@ -108,7 +108,7 @@ if (y) {
   );
   setTimeout(() => {
     // jobRunByCroneAWS();
-   // jobRunByCroneAWSForWingoGame();
+    // jobRunByCroneAWSForWingoGame();
 
     // generatedTimeEveryAfterEveryOneMinAWS(io);
     x = false;

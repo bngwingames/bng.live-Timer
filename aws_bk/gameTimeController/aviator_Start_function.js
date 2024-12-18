@@ -7,6 +7,12 @@ let total_cashout_temp = 0;
 let total_bet_place_temp = 0;
 let total_candidate = 0;
 let time_to_be_crashed = 0;
+let istrueRandom = true;
+let randomAray = [
+  0, 100, 200, 123, 100, 0, 500, 900, 500, 400, 200, 0, 0, 10, 220, 30, 40, 300,
+  400, 0, 500, 0, 1200, 900, 1100, 0, 0, 0, 800, 300, 900, 0, 700, 0, 600, 0,
+  400,
+];
 exports.aviator_Start_functionAWS = async (io) => {
   input_output = io;
   async function generateAndSendMessage(
@@ -76,165 +82,113 @@ exports.aviator_Start_functionAWS = async (io) => {
 
     ///////////////////////////////////// thsi is the calculation of total cashout sum
 
-    crashInterval = setInterval(async () => {
-      const total_amount_ka_60_percent = total_bet_place_temp * (70 / 100); /// 60 percent se upar jayega to crash kra dena hai
+    if (istrueRandom) {
+      const crashTime = Math.floor(Math.random() * randomAray.length);
+      setTimeout(() => {
+        already_call_functon &&
+          thisFunctonMustBePerFormAfterCrash(
+            Number(`${seconds}.${milliseconds}`),
+            "pre"
+          );
+        already_call_functon = false;
+        return;
+      }, randomAray[crashTime] || 300);
+    } else {
+      crashInterval = setInterval(async () => {
+        const total_amount_ka_60_percent = total_bet_place_temp * (70 / 100); /// 60 percent se upar jayega to crash kra dena hai
 
-      /////////////////// condition for loss amount //////////////////////////
+        /////////////////// condition for loss amount //////////////////////////
 
-      if (loss_amount !== 0 && total_bet_place_temp !== 0) {
-        if (get_counter >= 3) {
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-
-          already_call_functon &&
-            thisFunctonMustBePerFormAfterCrash(
-              Number(`${seconds}.${milliseconds}`),
-              "counter_jyada_ho_chuka_hai"
-            );
-
-          already_call_functon = false;
-          return;
-        } else if (loss_amount <= total_bet_place_temp) {
-          counterboolean = false;
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          already_call_functon &&
-            thisFunctonMustBePerFormAfterCrash(
-              Number(`${seconds}.${milliseconds}`),
-              "remove_all_loss_and_set_counter_to_zero"
-            );
-          already_call_functon = false;
-          return;
-        } else {
-          if (
-            find_any_loss_amount_match_with_60_percent?.[0] &&
-            find_any_loss_amount_match_with_60_percent?.[0]?.lossAmount >
-              total_bet_place_temp
-          ) {
+        if (loss_amount !== 0 && total_bet_place_temp !== 0) {
+          if (get_counter >= 3) {
             clearInterval(timerInterval);
             clearInterval(crashInterval);
             clearInterval(timerInterval);
             clearInterval(crashInterval);
 
-            const remaining_amount =
-              find_any_loss_amount_match_with_60_percent?.[0]?.lossAmount -
-              total_bet_place_temp;
+            already_call_functon &&
+              thisFunctonMustBePerFormAfterCrash(
+                Number(`${seconds}.${milliseconds}`),
+                "counter_jyada_ho_chuka_hai"
+              );
 
-            if (
-              remaining_amount > 0 &&
-              find_any_loss_amount_match_with_60_percent?.[0]
-            ) {
-              already_call_functon &&
-                thisFunctonMustBePerFormAfterCrash(
-                  Number(`${seconds}.${milliseconds}`),
-                  "loss_if_loss_jyada_hai_bet_amount_se_aur_60_percent_se_koi_match_bhi_kiya_hai",
-                  find_any_loss_amount_match_with_60_percent
-                );
-              already_call_functon = false;
-              return;
-            }
+            already_call_functon = false;
+            return;
+          } else if (loss_amount <= total_bet_place_temp) {
+            counterboolean = false;
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            already_call_functon &&
+              thisFunctonMustBePerFormAfterCrash(
+                Number(`${seconds}.${milliseconds}`),
+                "remove_all_loss_and_set_counter_to_zero"
+              );
+            already_call_functon = false;
+            return;
           } else {
-            /////////////////// means bet_amount jyada hai ////////////////////
-            if (find_any_loss_amount_match_with_60_percent?.[0]) {
+            if (
+              find_any_loss_amount_match_with_60_percent?.[0] &&
+              find_any_loss_amount_match_with_60_percent?.[0]?.lossAmount >
+                total_bet_place_temp
+            ) {
               clearInterval(timerInterval);
               clearInterval(crashInterval);
               clearInterval(timerInterval);
               clearInterval(crashInterval);
-              already_call_functon &&
-                thisFunctonMustBePerFormAfterCrash(
-                  Number(`${seconds}.${milliseconds}`),
-                  "recursive_functoin_for_all_removel_amount"
-                );
-              already_call_functon = false;
-              return;
-            } else {
+
+              const remaining_amount =
+                find_any_loss_amount_match_with_60_percent?.[0]?.lossAmount -
+                total_bet_place_temp;
+
               if (
-                total_bet_place_temp > 0 &&
-                counterboolean &&
-                total_cashout_temp > 0
+                remaining_amount > 0 &&
+                find_any_loss_amount_match_with_60_percent?.[0]
               ) {
-                counterboolean = false;
-                // const query_for_incr_counter =
-                //   "UPDATE aviator_loss_counter SET counter = counter + 1 WHERE id = 1;";
-                const query_for_incr_counter =
-                  "UPDATE aviator_loss_counter SET counter = 3 WHERE id = 1;";
-                await queryDb(query_for_incr_counter, []);
+                already_call_functon &&
+                  thisFunctonMustBePerFormAfterCrash(
+                    Number(`${seconds}.${milliseconds}`),
+                    "loss_if_loss_jyada_hai_bet_amount_se_aur_60_percent_se_koi_match_bhi_kiya_hai",
+                    find_any_loss_amount_match_with_60_percent
+                  );
+                already_call_functon = false;
+                return;
+              }
+            } else {
+              /////////////////// means bet_amount jyada hai ////////////////////
+              if (find_any_loss_amount_match_with_60_percent?.[0]) {
+                clearInterval(timerInterval);
+                clearInterval(crashInterval);
+                clearInterval(timerInterval);
+                clearInterval(crashInterval);
+                already_call_functon &&
+                  thisFunctonMustBePerFormAfterCrash(
+                    Number(`${seconds}.${milliseconds}`),
+                    "recursive_functoin_for_all_removel_amount"
+                  );
+                already_call_functon = false;
+                return;
+              } else {
+                if (
+                  total_bet_place_temp > 0 &&
+                  counterboolean &&
+                  total_cashout_temp > 0
+                ) {
+                  counterboolean = false;
+                  // const query_for_incr_counter =
+                  //   "UPDATE aviator_loss_counter SET counter = counter + 1 WHERE id = 1;";
+                  const query_for_incr_counter =
+                    "UPDATE aviator_loss_counter SET counter = 3 WHERE id = 1;";
+                  await queryDb(query_for_incr_counter, []);
+                }
               }
             }
           }
         }
-      }
 
-      /////////////////////////////////// thsi is the calculation of total cashout sum
-      if (total_candidate <= 2 && total_bet_place_temp >= 500) {
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        already_call_functon &&
-          thisFunctonMustBePerFormAfterCrash(
-            Number(`${seconds}.${milliseconds}`)
-          );
-        already_call_functon = false;
-        return;
-      }
-
-      /////////// conditoin for that if total amount is grater or equal that 500 Rs. creash ////////////////////
-      if (total_candidate <= 5 && total_bet_place_temp >= 1000) {
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        already_call_functon &&
-          thisFunctonMustBePerFormAfterCrash(
-            Number(`${seconds}.${milliseconds}`)
-          );
-        already_call_functon = false;
-        return;
-      }
-      ////////////////////// conndition is that means agar cashout 60% se jyada huaa to crash kra do///////////////
-      if (total_cashout_temp > total_amount_ka_60_percent) {
-        // console.log("Function is called now 60 percent se jyada");
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        clearInterval(timerInterval);
-        clearInterval(crashInterval);
-        counterboolean = false;
-        ///////////////// this is the condition that means if cashout is grater than //////////////////////
-        if (total_cashout_temp > total_bet_place_temp) {
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          already_call_functon &&
-            thisFunctonMustBePerFormAfterCrash(
-              Number(`${seconds}.${milliseconds}`),
-              "sixty_percent_se_jyada_ka_crash"
-            );
-          already_call_functon = false;
-          return;
-        } else if (total_cashout_temp < total_bet_place_temp) {
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          clearInterval(timerInterval);
-          clearInterval(crashInterval);
-          already_call_functon &&
-            thisFunctonMustBePerFormAfterCrash(
-              Number(`${seconds}.${milliseconds}`),
-              "null"
-            );
-          already_call_functon = false;
-          return;
-        }
-        ///////////////// this is the condition that means if cashout is grater than //////////////////////
-      }
-      //////////////////// agar bet lgi hui hai to  second 4 se jyada nhi hone chahiye (+1 krna pdega hmesa q ki ui me +1 karke dikhaya gya hai each and everything)
-      if (total_bet_place_temp > 0) {
-        if (Number(seconds >= 3)) {
+        /////////////////////////////////// thsi is the calculation of total cashout sum
+        if (total_candidate <= 2 && total_bet_place_temp >= 500) {
           clearInterval(timerInterval);
           clearInterval(crashInterval);
           clearInterval(timerInterval);
@@ -246,8 +200,73 @@ exports.aviator_Start_functionAWS = async (io) => {
           already_call_functon = false;
           return;
         }
-      }
-    }, 200);
+
+        /////////// conditoin for that if total amount is grater or equal that 500 Rs. creash ////////////////////
+        if (total_candidate <= 5 && total_bet_place_temp >= 1000) {
+          clearInterval(timerInterval);
+          clearInterval(crashInterval);
+          clearInterval(timerInterval);
+          clearInterval(crashInterval);
+          already_call_functon &&
+            thisFunctonMustBePerFormAfterCrash(
+              Number(`${seconds}.${milliseconds}`)
+            );
+          already_call_functon = false;
+          return;
+        }
+        ////////////////////// conndition is that means agar cashout 60% se jyada huaa to crash kra do///////////////
+        if (total_cashout_temp > total_amount_ka_60_percent) {
+          // console.log("Function is called now 60 percent se jyada");
+          clearInterval(timerInterval);
+          clearInterval(crashInterval);
+          clearInterval(timerInterval);
+          clearInterval(crashInterval);
+          counterboolean = false;
+          ///////////////// this is the condition that means if cashout is grater than //////////////////////
+          if (total_cashout_temp > total_bet_place_temp) {
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            already_call_functon &&
+              thisFunctonMustBePerFormAfterCrash(
+                Number(`${seconds}.${milliseconds}`),
+                "sixty_percent_se_jyada_ka_crash"
+              );
+            already_call_functon = false;
+            return;
+          } else if (total_cashout_temp < total_bet_place_temp) {
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            already_call_functon &&
+              thisFunctonMustBePerFormAfterCrash(
+                Number(`${seconds}.${milliseconds}`),
+                "null"
+              );
+            already_call_functon = false;
+            return;
+          }
+          ///////////////// this is the condition that means if cashout is grater than //////////////////////
+        }
+        //////////////////// agar bet lgi hui hai to  second 4 se jyada nhi hone chahiye (+1 krna pdega hmesa q ki ui me +1 karke dikhaya gya hai each and everything)
+        if (total_bet_place_temp > 0) {
+          if (Number(seconds >= 3)) {
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            clearInterval(timerInterval);
+            clearInterval(crashInterval);
+            already_call_functon &&
+              thisFunctonMustBePerFormAfterCrash(
+                Number(`${seconds}.${milliseconds}`)
+              );
+            already_call_functon = false;
+            return;
+          }
+        }
+      }, 200);
+    }
 
     async function thisFunctonMustBePerFormAfterCrash(time, msg) {
       already_call_functon = false;
